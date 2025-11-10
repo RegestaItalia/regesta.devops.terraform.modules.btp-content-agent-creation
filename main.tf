@@ -22,11 +22,6 @@ variable "spaceid" {
   type = string
 }
 
-variable "content-agent-plan" {
-  type    = string
-  default = "default"
-}
-
 # -------------------
 # DATA SOURCE
 # -------------------
@@ -35,20 +30,19 @@ data "btp_subaccount" "current" {
 }
 
 # -------------------
-# ENTITLEMENTS & SUBSCRIPTION
+# AGENT UI INTEGRATION
 # -------------------
-resource "btp_subaccount_entitlement" "content-agent" {
+resource "btp_subaccount_subscription" "content-agent-ui" {
   subaccount_id = var.subaccountid
-  service_name  = "content-agent"
-  plan_name     = var.content-agent-plan
+  app_name      = "content-agent-ui"
+  plan_name     = "free"
 }
 
 # -------------------
 # CLOUD FOUNDRY SERVICES
 # -------------------
 data "cloudfoundry_service_plan" "content-agent" {
-  depends_on            = [btp_subaccount_entitlement.content-agent]
-  name                  = var.content-agent-plan
+  name                  = "standard"
   service_offering_name = "content-agent"
 }
 
