@@ -62,9 +62,8 @@ provider "cloudfoundry" {
 module "content_agent" {
   source = "git::https://github.com/RegestaItalia/regesta.devops.terraform.modules.btp-content-agent-creation.git?ref=main"
 
-  subaccountid       = "your_subaccount_id"
-  spaceid            = "your_space_id"
-  content-agent-plan = "default" # oppure altro piano disponibile
+  subaccountid = "your_subaccount_id"
+  spaceid      = "your_space_id"
 }
 ```
 
@@ -73,7 +72,6 @@ module "content_agent" {
 
 - **subaccountid** (string): ID del subaccount BTP.
 - **spaceid** (string): ID dello space Cloud Foundry.
-- **content-agent-plan** (string, default: "default"): Piano da utilizzare per il servizio Content Agent.
 
 
 
@@ -85,8 +83,8 @@ module "content_agent" {
 
 ## Risorse create
 
-- **Entitlements** per il servizio: `content-agent`
-- **Istanza gestita** di servizio Cloud Foundry per `content-agent`
+- **Subscription** per `content-agent-ui` con piano `free`
+- **Istanza gestita** di servizio Cloud Foundry per `content-agent` con piano `standard`
 - **Service key** per `content-agent` (usata per ottenere le credenziali)
 
 ````
