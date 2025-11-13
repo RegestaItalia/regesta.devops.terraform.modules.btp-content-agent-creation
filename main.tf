@@ -69,6 +69,14 @@ resource "cloudfoundry_service_instance" "content-agent-application" {
   type         = "managed"
   space        = var.spaceid
   service_plan = data.cloudfoundry_service_plan.content-agent-application.id
+  parameters = jsonencode({
+    roles = [
+      "Import",
+      "Read",
+      "Export",
+      "Security Operator"
+    ]
+  })
 }
 
 resource "cloudfoundry_service_credential_binding" "content-agent-application-key" {
