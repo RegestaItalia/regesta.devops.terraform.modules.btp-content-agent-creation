@@ -59,10 +59,33 @@ resource "cloudfoundry_service_credential_binding" "content-agent-key" {
   service_instance = cloudfoundry_service_instance.content-agent.id
 }
 
+data "cloudfoundry_service_plan" "content-agent-application" {
+  name                  = "application"
+  service_offering_name = "content-agent"
+}
+
+resource "cloudfoundry_service_instance" "content-agent-application" {
+  name         = "content-agent-application"
+  type         = "managed"
+  space        = var.spaceid
+  service_plan = data.cloudfoundry_service_plan.content-agent-application.id
+}
+
+resource "cloudfoundry_service_credential_binding" "content-agent-application-key" {
+  type             = "key"
+  name             = "content-agent-application-key"
+  service_instance = cloudfoundry_service_instance.content-agent-application.id
+}
+
 # -------------------
 # OUTPUT
 # -------------------
 output "service-key" {
   value     = cloudfoundry_service_credential_binding.content-agent-key
+  sensitive = true
+}
+
+output "service-key-application" {
+  value     = cloudfoundry_service_credential_binding.content-agent-application-key
   sensitive = true
 }

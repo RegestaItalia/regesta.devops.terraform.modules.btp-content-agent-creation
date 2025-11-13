@@ -78,13 +78,16 @@ module "content_agent" {
 
 ## Output
 
-- **service-key**: Oggetto della chiave di servizio generata per Content Agent. Contiene le credenziali necessarie per accedere al servizio.
+- **service-key**: Oggetto della chiave di servizio generata per Content Agent (piano standard). Contiene le credenziali necessarie per accedere al servizio.
+- **service-key-application**: Oggetto della chiave di servizio generata per Content Agent (piano application). Contiene le credenziali necessarie per accedere al servizio.
 
 
 ## Risorse create
 
 - **Subscription** per `content-agent-ui` con piano `free`
 - **Istanza gestita** di servizio Cloud Foundry per `content-agent` con piano `standard`
-- **Service key** per `content-agent` (usata per ottenere le credenziali)
+- **Service key** per `content-agent` (piano standard)
+- **Istanza gestita** di servizio Cloud Foundry per `content-agent-application` con piano `application`
+- **Service key** per `content-agent-application` (piano application)
 
 ````
