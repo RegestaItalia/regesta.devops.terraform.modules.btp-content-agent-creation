@@ -22,6 +22,13 @@ variable "spaceid" {
   type = string
 }
 
+variable "ctms_service_key" {
+  type        = string
+  description = "Service key JSON for Cloud Transport Management Service (optional). If provided, creates a TransportManagementService destination."
+  default     = null
+  sensitive   = true
+}
+
 # -------------------
 # DATA SOURCE
 # -------------------
@@ -86,6 +93,28 @@ resource "cloudfoundry_service_credential_binding" "content-agent-application-ke
 }
 
 # -------------------
+# DESTINATION (CONDITIONAL)
+# -------------------
+resource "btp_subaccount_destination" "transport-management-service" {
+  count = var.ctms_service_key != null ? 1 : 0
+
+  subaccount_id  = var.subaccountid
+  name           = "TransportManagementService"
+  type           = "HTTP"
+  url            = jsondecode(var.ctms_service_key)["uri"]
+  authentication = "OAuth2ClientCredentials"
+  proxy_type     = "Internet"
+  description    = "Cloud Transport Management Service destination"
+  
+  additional_configuration = jsonencode({
+    clientId            = jsondecode(var.ctms_service_key)["uaa"]["clientid"]
+    clientSecret        = jsondecode(var.ctms_service_key)["uaa"]["clientsecret"]
+    tokenServiceURL     = "${jsondecode(var.ctms_service_key)["uaa"]["url"]}/oauth/token"
+    tokenServiceURLType = "Dedicated"
+  })
+}
+
+# -------------------
 # OUTPUT
 # -------------------
 output "service-key" {
@@ -96,4 +125,12 @@ output "service-key" {
 output "service-key-application" {
   value     = cloudfoundry_service_credential_binding.content-agent-application-key
   sensitive = true
+}
+
+output "ctms-destination" {
+  value = var.ctms_service_key != null ? {
+    name = btp_subaccount_destination.transport-management-service[0].name
+    url  = btp_subaccount_destination.transport-management-service[0].url
+  } : null
+  description = "Cloud Transport Management Service destination details (if CTMS service key was provided)"
 }
