@@ -112,10 +112,13 @@ module "content_agent" {
 - **Istanza gestita** di servizio Cloud Foundry per `content-agent-application` con piano `application` (con ruoli: Import, Read, Export, Security Operator)
 - **Service key** per `content-agent-application` (piano application)
 - **Destinazione BTP** "TransportManagementService" (opzionale, solo se `ctms_service_key` è fornita)
+- **Role Collection** `ContentAgentActivities` con ruolo:
+  - `Activities`: Accesso alle attività del Content Agent
 
 ## Note
 
 - Se viene fornita la variabile `ctms_service_key`, il modulo crea automaticamente una destinazione BTP chiamata "TransportManagementService" configurata con OAuth2ClientCredentials
 - La destinazione CTMS utilizza i parametri estratti dalla service key fornita per configurare l'autenticazione
+- La role collection viene creata automaticamente dopo la subscription, recuperando dinamicamente l'app_id del ruolo tramite data source BTP
 
 ````

@@ -115,6 +115,32 @@ resource "btp_subaccount_destination" "transport-management-service" {
 }
 
 # -------------------
+# ROLE COLLECTIONS
+# -------------------
+data "btp_subaccount_role" "content-agent-activities" {
+  depends_on        = [btp_subaccount_subscription.content-agent-ui]
+  subaccount_id     = var.subaccountid
+  name              = "Activities"
+  app_id            = "content-agent-ui"
+  role_template_name = "Activities"
+}
+
+resource "btp_subaccount_role_collection" "content-agent-activities" {
+  depends_on    = [data.btp_subaccount_role.content-agent-activities]
+  subaccount_id = var.subaccountid
+  name          = "ContentAgentActivities"
+  description   = "Content Agent Activities role collection"
+
+  roles = [
+    {
+      name                 = data.btp_subaccount_role.content-agent-activities.name
+      role_template_app_id = data.btp_subaccount_role.content-agent-activities.app_id
+      role_template_name   = data.btp_subaccount_role.content-agent-activities.role_template_name
+    }
+  ]
+}
+
+# -------------------
 # OUTPUT
 # -------------------
 output "service-key" {
